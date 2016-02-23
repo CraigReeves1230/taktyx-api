@@ -1,0 +1,2 @@
+1. Make sure validation errors are returned for login form and other forms.
+2. Limit the amount of services a user can add.
