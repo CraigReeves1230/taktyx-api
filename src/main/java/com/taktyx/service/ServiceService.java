@@ -11,8 +11,13 @@ import com.taktyx.model.*;
 import com.taktyx.model.assoc.UserService;
 import com.taktyx.resource.bean.ServiceForm;
 import com.taktyx.service.enums.ServiceResultType;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServiceService extends AbstractService
 {
@@ -122,6 +127,66 @@ public class ServiceService extends AbstractService
       // Validation failed
       serviceResult.setSuccess(false);
       serviceResult = validationResult;
+    }
+
+    return serviceResult;
+  }
+
+  /**
+   * Finds a service based on location, proximity, and category
+   * @param location
+   * @param proximity
+   * @param category
+   * @return
+   */
+  public ServiceResult findServicesNearLocation(Location location, Double proximity, Long category)
+  {
+    ServiceResult serviceResult = new ServiceResult();
+    ArrayList<Service> services = new ArrayList<>();
+
+    // Find all services within the category
+    Session dbSession = getDBSessionFactory().openSession();
+    Category categoryObj = dbSession.get(Category.class, category);
+    Criteria criteria = dbSession.createCriteria(Service.class);
+    criteria.add(Restrictions.eq("category", categoryObj));
+    ArrayList<Service> serviceSearchList = (ArrayList<Service>) criteria.list();
+    dbSession.close();
+
+    if (serviceSearchList.size() == 0)
+    {
+      // No services were found in category
+      serviceResult.setSuccess(false);
+      serviceResult.setResultType(ServiceResultType.NO_RESULTS_FOUND);
+    }
+    else
+    {
+      // Test location against each service
+      for (Service testService : serviceSearchList)
+      {
+        Location testServiceLocation = testService.getAddress().getLocation();
+
+        // Calculate distance between two points
+        Double earthRadius = 6371000d;
+        Double lat1 = Math.toRadians(location.getLatitude());
+        Double lat2 = Math.toRadians(testServiceLocation.getLatitude());
+        Double latDelta = Math.toRadians(testServiceLocation.getLatitude() - location.getLatitude());
+        Double lngDelta = Math.toRadians(testServiceLocation.getLongitude() - location.getLongitude());
+
+        Double a = Math.sin(latDelta / 2) * Math.sin(latDelta / 2) + Math.cos(lat1) * Math.cos(lat2) * Math.sin(lngDelta / 2) * Math.sin(lngDelta / 2);
+        Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+        Double distanceKm = (earthRadius * c) / 1000;
+        Double distanceMiles = distanceKm * 0.621371;
+
+        // Add it to the eligible services if it is within proximity
+        if (distanceMiles <= proximity)
+        {
+          services.add(testService);
+        }
+      }
+
+      serviceResult.setData(services);
+      serviceResult.setSuccess(true);
     }
 
     return serviceResult;
