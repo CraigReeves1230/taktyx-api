@@ -8,15 +8,42 @@
 
 package com.taktyx.resource;
 
-import com.taktyx.resource.ResourceResponse;
 import com.taktyx.resource.bean.ValidationErrors;
+import com.taktyx.service.ServiceLocator;
 import com.taktyx.service.ServiceResult;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import javax.servlet.ServletContext;
+import javax.ws.rs.core.Context;
 import java.io.IOException;
 
 public class AbstractResource
 {
+  @Context
+  protected ServletContext context;
+
+  protected ServiceLocator serviceLocator;
+
+  public ServletContext getContext()
+  {
+    return context;
+  }
+
+  public ServiceLocator getServiceLocator()
+  {
+    if (serviceLocator != null)
+    {
+      serviceLocator = (ServiceLocator) getContext().getAttribute("serviceLocator");
+    }
+
+    return serviceLocator;
+  }
+
+  public void setContext(ServletContext context)
+  {
+    this.context = context;
+  }
+
   protected ResourceResponse handleValidationErrors(ServiceResult result)
   {
     ValidationErrors validationErrors = (ValidationErrors) result.getData();
