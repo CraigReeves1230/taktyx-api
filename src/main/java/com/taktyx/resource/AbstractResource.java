@@ -31,7 +31,7 @@ public class AbstractResource
 
   public ServiceLocator getServiceLocator()
   {
-    if (serviceLocator != null)
+    if (serviceLocator == null)
     {
       serviceLocator = (ServiceLocator) getContext().getAttribute("serviceLocator");
     }

@@ -5,12 +5,13 @@
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="hibernate.connection.datasource">java:/taktyx-development</property>
         <property name="hibernate.hbm2ddl.auto">update</property>
-
         <mapping class="com.taktyx.model.User"/>
         <mapping class="com.taktyx.model.Location"/>
         <mapping class="com.taktyx.model.Category"/>
         <mapping class="com.taktyx.model.Service"/>
         <mapping class="com.taktyx.model.Address"/>
+        <mapping class="com.taktyx.model.Message"/>
         <mapping class="com.taktyx.model.assoc.UserService"/>
+        <mapping class="com.taktyx.model.assoc.ServiceMessage"/>
     </session-factory>
 </hibernate-configuration>
