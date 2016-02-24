@@ -11,6 +11,7 @@ public enum ServiceResultType
   VALIDATION_ERROR,
   DB_ERROR,
   HTTP_ERROR,
+  NO_RESULTS_FOUND,
   PARSE_ERROR,
   SUCCESS
 }

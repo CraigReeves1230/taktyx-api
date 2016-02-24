@@ -32,11 +32,9 @@ public class Location
   protected Long id;
 
   @Column(nullable = false)
-  @NotNull
   protected Double longitude;
 
   @Column(nullable = false)
-  @NotNull
   protected Double latitude;
 
   @Column(name = "date_created")

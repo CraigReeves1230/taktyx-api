@@ -10,19 +10,14 @@ package com.taktyx.resource;
 import com.taktyx.resource.bean.UserForm;
 import com.taktyx.service.enums.ServiceResultType;
 import com.taktyx.service.*;
-import javax.servlet.ServletContext;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 @Path("user")
 public class UserResource extends AbstractResource
-{  
-  @Context
-  private ServletContext context;
-
+{
   @POST
   @Produces(MediaType.APPLICATION_JSON)
   public ResourceResponse create(UserForm userForm)
@@ -30,8 +25,7 @@ public class UserResource extends AbstractResource
     ResourceResponse resourceResponse = new ResourceResponse();
     
     // Validate incoming form
-    ServiceLocator serviceLocator = (ServiceLocator) context.getAttribute("serviceLocator");
-    UserService userService = (UserService) serviceLocator.get(UserService.class);
+    UserService userService = (UserService) getServiceLocator().get(UserService.class);
     
     ServiceResult result = userService.create(userForm);
     if (result.isSuccess())

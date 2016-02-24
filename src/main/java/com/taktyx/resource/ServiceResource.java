@@ -7,26 +7,19 @@
 
 package com.taktyx.resource;
 
+import com.taktyx.model.Location;
 import com.taktyx.resource.bean.ServiceForm;
 import com.taktyx.service.ServiceLocator;
 import com.taktyx.service.ServiceResult;
 import com.taktyx.service.ServiceService;
 import com.taktyx.service.enums.ServiceResultType;
 
-import javax.servlet.ServletContext;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-
 
 @Path("service")
 public class ServiceResource extends AbstractResource
 {
-  @Context
-  private ServletContext context;
-
   @POST
   @Produces(MediaType.APPLICATION_JSON)
   public ResourceResponse create(ServiceForm serviceForm)
@@ -34,8 +27,7 @@ public class ServiceResource extends AbstractResource
     ResourceResponse resourceResponse = new ResourceResponse();
 
     // Validate incoming form
-    ServiceLocator serviceLocator = (ServiceLocator) context.getAttribute("serviceLocator");
-    ServiceService serviceService = (ServiceService) serviceLocator.get(ServiceService.class);
+    ServiceService serviceService = (ServiceService) getServiceLocator().get(ServiceService.class);
     ServiceResult result = serviceService.create(serviceForm);
 
     resourceResponse.success = result.isSuccess();
@@ -58,6 +50,22 @@ public class ServiceResource extends AbstractResource
     }
 
     resourceResponse.success = result.isSuccess();
+    return resourceResponse;
+  }
+
+  @GET
+  @Path("location")
+  public ResourceResponse findByLocation(@QueryParam("category") Long category, @QueryParam("latitude") Double lat, @QueryParam("longitude") Double lng)
+  {
+    ResourceResponse resourceResponse = new ResourceResponse();
+    Location location = new Location();
+    location.setLatitude(lat);
+    location.setLongitude(lng);
+
+    ServiceLocator serviceLocator = (ServiceLocator) getContext().getAttribute("serviceLocator");
+    ServiceService serviceService = (ServiceService) serviceLocator.get(ServiceService.class);
+    ServiceResult result = serviceService.findServicesNearLocation(location, 15d, category);
+
     return resourceResponse;
   }
 }

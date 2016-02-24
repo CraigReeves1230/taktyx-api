@@ -8,6 +8,7 @@
 package com.taktyx.resource;
 
 import com.taktyx.resource.bean.LoginForm;
+import com.taktyx.service.AbstractService;
 import com.taktyx.service.ServiceLocator;
 import com.taktyx.service.ServiceResult;
 import com.taktyx.service.UserService;
@@ -19,17 +20,13 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 @Path("auth")
-public class AuthResource
+public class AuthResource extends AbstractResource
 {
-  @Context
-  private ServletContext context;
-  
   @POST
   @Produces(MediaType.APPLICATION_JSON)
   public ResourceResponse authenticate(LoginForm loginForm)
   {
-    ServiceLocator serviceLocator = (ServiceLocator) context.getAttribute("serviceLocator");
-    UserService userService = (UserService) serviceLocator.get(UserService.class);
+    UserService userService = (UserService) getServiceLocator().get(UserService.class);
     
     ServiceResult serviceResult = userService.authenticate(loginForm);
     
