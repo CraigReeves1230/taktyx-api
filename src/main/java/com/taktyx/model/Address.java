@@ -7,12 +7,13 @@
 
 package com.taktyx.model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import javax.persistence.*;
 
 @Entity
 @Table(name = "Addresses")
-public class Address
+public class Address implements Serializable
 {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

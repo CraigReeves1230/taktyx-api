@@ -1,11 +1,12 @@
 /**
- * The Message class
+ * The Rating Class
  *
- * This class represents a message from services and users
+ * This represents ratings that apply to services and users
  * @author: Christopher Reeves <chrisreeves12@yahoo.com>
  */
 
 package com.taktyx.model;
+
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,16 +14,16 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
-@Table(name = "Messages")
-public class Message implements Serializable
+@Table(name = "Ratings")
+public class Rating implements Serializable
 {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id")
+  @Column(name="id")
   protected Long id;
 
-  @Lob
-  protected String content;
+  @Column(name = "value_id", nullable = false)
+  protected float value;
 
   @ManyToOne(targetEntity = User.class)
   @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -34,6 +35,11 @@ public class Message implements Serializable
   @Column(name = "date_modified")
   protected Timestamp dateModified;
 
+  public Timestamp getDateModified()
+  {
+    return dateModified;
+  }
+
   public Long getId()
   {
     return id;
@@ -44,34 +50,29 @@ public class Message implements Serializable
     this.id = id;
   }
 
+  public float getValue()
+  {
+    return value;
+  }
+
+  public void setValue(float value)
+  {
+    this.value = value;
+  }
+
   public User getUser()
   {
     return user;
   }
 
-  public String getContent()
+  public void setUser(User user)
   {
-    return content;
-  }
-
-  public Timestamp getDateModified()
-  {
-    return dateModified;
+    this.user = user;
   }
 
   public Timestamp getDateCreated()
   {
     return dateCreated;
-  }
-
-  public void setContent(String content)
-  {
-    this.content = content;
-  }
-
-  public void setUser(User user)
-  {
-    this.user = user;
   }
 
   public void setDateCreated(Timestamp dateCreated)

@@ -7,6 +7,7 @@
 
 package com.taktyx.model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 import javax.persistence.Column;
@@ -16,14 +17,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "Locations", indexes =
 {
   @Index(columnList = "longitude, latitude", name = "IDX_LONG_LAT")
 })
-public class Location
+public class Location implements Serializable
 {
 
   @Id

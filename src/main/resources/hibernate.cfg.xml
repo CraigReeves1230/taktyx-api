@@ -11,7 +11,9 @@
         <mapping class="com.taktyx.model.Service"/>
         <mapping class="com.taktyx.model.Address"/>
         <mapping class="com.taktyx.model.Message"/>
-        <mapping class="com.taktyx.model.assoc.UserService"/>
         <mapping class="com.taktyx.model.assoc.ServiceMessage"/>
+        <mapping class="com.taktyx.model.assoc.UserMessage"/>
+        <mapping class="com.taktyx.model.Rating"/>
+        <mapping class="com.taktyx.model.assoc.ServiceRating"/>
     </session-factory>
 </hibernate-configuration>

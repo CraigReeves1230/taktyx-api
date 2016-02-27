@@ -5,6 +5,7 @@
 
 package com.taktyx.resource;
 
+import com.taktyx.resource.bean.ServiceMessageForm;
 import com.taktyx.resource.bean.UserMessageForm;
 import com.taktyx.service.MessageService;
 import com.taktyx.service.ServiceResult;
@@ -28,6 +29,20 @@ public class MessageResource extends AbstractResource
     ServiceResult result = messageService.createUserMessage(userMessageForm);
     resourceResponse.success = result.isSuccess();
     resourceResponse.data = result.getData();
+
+    return resourceResponse;
+  }
+
+  @POST
+  @Path("service")
+  @Produces(MediaType.APPLICATION_JSON)
+  public ResourceResponse createServiceMessage(ServiceMessageForm serviceMessageForm)
+  {
+    ResourceResponse resourceResponse = new ResourceResponse();
+    MessageService messageService = (MessageService) getServiceLocator().get(MessageService.class);
+
+    ServiceResult result = messageService.createServiceMessage(serviceMessageForm);
+    resourceResponse.success = result.isSuccess();
 
     return resourceResponse;
   }

@@ -19,6 +19,7 @@ import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.Email;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -27,7 +28,7 @@ import java.util.Date;
 @Index(columnList = "email, password", name="IDX_EMAIL_PASS"),
 @Index(columnList = "phone_number", name="IDX_USR_PHONE")
 })
-public class User
+public class User implements Serializable
 {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

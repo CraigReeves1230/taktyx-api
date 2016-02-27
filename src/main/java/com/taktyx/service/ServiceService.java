@@ -8,7 +8,8 @@
 package com.taktyx.service;
 
 import com.taktyx.model.*;
-import com.taktyx.model.assoc.UserService;
+import com.taktyx.model.assoc.ServiceRating;
+import com.taktyx.resource.bean.AddRatingForm;
 import com.taktyx.resource.bean.ServiceForm;
 import com.taktyx.service.enums.ServiceResultType;
 import org.hibernate.Criteria;
@@ -17,7 +18,6 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ServiceService extends AbstractService
 {
@@ -98,13 +98,7 @@ public class ServiceService extends AbstractService
           throw new Exception("You must be logged in to add a service.");
         }
 
-        // Add relationship between service and user and save to database
-        UserService userService = new UserService();
-        userService.setUser(user);
-        userService.setService(service);
-        userService.setDateCreated(null);
-        userService.setDateModified(null);
-        dbSession.save(userService);
+        service.setUser(user);
 
         dbSession.save(service);
         transaction.commit();
@@ -188,6 +182,95 @@ public class ServiceService extends AbstractService
       serviceResult.setData(services);
       serviceResult.setSuccess(true);
     }
+
+    return serviceResult;
+  }
+
+  /**
+   * Add a rating to a service
+   * @param addRatingForm
+   * @return
+   */
+  public ServiceResult addRating(AddRatingForm addRatingForm)
+  {
+    ServiceResult serviceResult = new ServiceResult();
+
+    try (Session dbSession = getDBSessionFactory().openSession())
+    {
+      // Find service, user and rating
+      Service service = dbSession.get(Service.class, addRatingForm.service_id);
+      User user = dbSession.get(User.class, addRatingForm.user_id);
+
+      // Check if service and user exist
+      if (user != null && service != null)
+      {
+        // Save rating
+        dbSession.getTransaction().begin();
+        Rating rating = new Rating();
+        rating.setValue(addRatingForm.rating);
+        rating.setUser(user);
+        rating.setDateModified(null);
+        rating.setDateCreated(null);
+        dbSession.save(rating);
+
+        // Create relationship between service and rating
+        ServiceRating serviceRating = new ServiceRating();
+        serviceRating.setService(service);
+        serviceRating.setRating(rating);
+        serviceRating.setDateCreated(null);
+        serviceRating.setDateModified(null);
+        dbSession.save(serviceRating);
+
+        dbSession.getTransaction().commit();
+
+        // Return success result
+        serviceResult.setData(addRatingForm);
+        serviceResult.setSuccess(true);
+        serviceResult.setData(addRatingForm);
+      }
+      else
+      {
+        if (dbSession.isOpen())
+          dbSession.close();
+
+        serviceResult.setData("The user and/or service cannot be found in the database.");
+        serviceResult.setSuccess(false);
+        serviceResult.setResultType(ServiceResultType.NO_RESULTS_FOUND);
+      }
+    }
+    catch (Exception ex)
+    {
+      // An error occurred while saving to database
+      serviceResult.setResultType(ServiceResultType.DB_ERROR);
+      serviceResult.setSuccess(false);
+      serviceResult.setData(ex.getMessage());
+    }
+
+    return serviceResult;
+  }
+
+  /**
+   * Calculates a rating score from the average of the incoming rating score and the exist
+   * rating score. Also updates the number of ratings
+   * @param service
+   * @param rating
+   * @return
+   */
+  public ServiceResult updateRatingsAttributes(Service service, Rating rating)
+  {
+    ServiceResult serviceResult = new ServiceResult();
+
+    // Get current service rating
+    Float currentRating = (service.getRatingScore() == null) ? 0 : service.getRatingScore();
+    Float newRating = rating.getValue();
+
+    Float calculatedRating = (currentRating + newRating) / 2;
+    service.setRatingScore(calculatedRating);
+    Long numberOfRatings = (service.getNumberOfRatings() == null) ? 0 : service.getNumberOfRatings();
+    service.setNumberOfRatings(numberOfRatings + 1);
+    serviceResult.setData(service);
+
+    serviceResult.setSuccess(true);
 
     return serviceResult;
   }

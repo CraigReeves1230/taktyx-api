@@ -7,13 +7,14 @@
 
 package com.taktyx.model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 import javax.persistence.*;
 
 @Entity
 @Table(name = "Services")
-public class Service
+public class Service implements Serializable
 {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +28,18 @@ public class Service
   @JoinColumn(name = "category_id", referencedColumnName = "id")
   protected Category category;
 
+  @ManyToOne(targetEntity = User.class)
+  @JoinColumn(name = "user_id", referencedColumnName = "id")
+  protected User user;
+
   @Column(name = "inactive", nullable = false)
   protected boolean inactive;
+
+  @Column(name = "rating_score", nullable = true)
+  protected Float ratingScore;
+
+  @Column(name = "num_of_ratings", nullable = true)
+  protected Long numberOfRatings;
 
   @Column(name = "description", columnDefinition = "LONGTEXT", nullable = true)
   protected String description;
@@ -43,11 +54,41 @@ public class Service
   @JoinColumn(name = "address_id", referencedColumnName = "id")
   protected Address address;
 
+  public Long getNumberOfRatings()
+  {
+    return numberOfRatings;
+  }
+
+  public void setNumberOfRatings(Long numberOfRatings)
+  {
+    this.numberOfRatings = numberOfRatings;
+  }
+
+  public Float getRatingScore()
+  {
+    return ratingScore;
+  }
+
+  public void setRatingScore(Float ratingScore)
+  {
+    this.ratingScore = ratingScore;
+  }
+
   @Column(name = "date_created")
   protected Timestamp dateCreated;
 
   @Column(name = "date_modified")
   protected Timestamp dateModified;
+
+  public User getUser()
+  {
+    return user;
+  }
+
+  public void setUser(User user)
+  {
+    this.user = user;
+  }
 
   public Long getId()
   {

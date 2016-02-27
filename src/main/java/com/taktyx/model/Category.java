@@ -15,12 +15,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
 @Table(name = "Categories")
-public class Category
+public class Category implements Serializable
 {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,35 +1,37 @@
 /**
- * The UserService class
+ * The ServiceRating class
  *
- * Represents the relationship between the users and services
+ * This class represents the relationship between services and ratings
  * @author: Christopher Reeves <chrisreeves12@yahoo.com>
  */
 
 package com.taktyx.model.assoc;
 
+import com.taktyx.model.Rating;
 import com.taktyx.model.Service;
 import com.taktyx.model.User;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
-@Table(name = "AssocUsersServices")
-public class UserService
+@Table(name = "AssocServicesRatings")
+public class ServiceRating implements Serializable
 {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id")
+  @Column(name="id")
   protected Long id;
-
-  @ManyToOne(targetEntity = User.class)
-  @JoinColumn(name = "user_id", referencedColumnName = "id")
-  protected User user;
 
   @ManyToOne(targetEntity = Service.class)
   @JoinColumn(name = "service_id", referencedColumnName = "id")
   protected Service service;
+
+  @ManyToOne(targetEntity = Rating.class)
+  @JoinColumn(name = "rating_id", referencedColumnName = "id")
+  protected Rating rating;
 
   @Column(name = "date_created")
   protected Timestamp dateCreated;
@@ -47,16 +49,6 @@ public class UserService
     this.id = id;
   }
 
-  public User getUser()
-  {
-    return user;
-  }
-
-  public void setUser(User user)
-  {
-    this.user = user;
-  }
-
   public Service getService()
   {
     return service;
@@ -65,6 +57,26 @@ public class UserService
   public void setService(Service service)
   {
     this.service = service;
+  }
+
+  public Rating getRating()
+  {
+    return rating;
+  }
+
+  public void setRating(Rating rating)
+  {
+    this.rating = rating;
+  }
+
+  public Timestamp getDateCreated()
+  {
+    return dateCreated;
+  }
+
+  public Timestamp getDateModified()
+  {
+    return dateModified;
   }
 
   public void setDateCreated(Timestamp dateCreated)
@@ -93,3 +105,4 @@ public class UserService
     }
   }
 }
+

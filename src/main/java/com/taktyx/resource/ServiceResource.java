@@ -8,8 +8,8 @@
 package com.taktyx.resource;
 
 import com.taktyx.model.Location;
+import com.taktyx.resource.bean.AddRatingForm;
 import com.taktyx.resource.bean.ServiceForm;
-import com.taktyx.service.ServiceLocator;
 import com.taktyx.service.ServiceResult;
 import com.taktyx.service.ServiceService;
 import com.taktyx.service.enums.ServiceResultType;
@@ -62,9 +62,24 @@ public class ServiceResource extends AbstractResource
     location.setLatitude(lat);
     location.setLongitude(lng);
 
-    ServiceLocator serviceLocator = (ServiceLocator) getContext().getAttribute("serviceLocator");
-    ServiceService serviceService = (ServiceService) serviceLocator.get(ServiceService.class);
+    ServiceService serviceService = (ServiceService) getServiceLocator().get(ServiceService.class);
     ServiceResult result = serviceService.findServicesNearLocation(location, 15d, category);
+    resourceResponse.success = result.isSuccess();
+    resourceResponse.data = result.getData();
+
+    return resourceResponse;
+  }
+
+  @POST
+  @Path("rating")
+  public ResourceResponse addRating(AddRatingForm addRatingForm)
+  {
+    ResourceResponse resourceResponse = new ResourceResponse();
+
+    ServiceService serviceService = (ServiceService) getServiceLocator().get(ServiceService.class);
+    ServiceResult result = serviceService.addRating(addRatingForm);
+    resourceResponse.data = result.getData();
+    resourceResponse.success = result.isSuccess();
 
     return resourceResponse;
   }

@@ -1,7 +1,7 @@
 /**
- * The ServiceMessage class
+ * The UserMessage class
  *
- * This class represents the relationship between
+ * Represents the relationship between users and messages
  * @author: Christopher Reeves <chrisreeves12@yahoo.com>
  */
 
@@ -9,6 +9,7 @@ package com.taktyx.model.assoc;
 
 import com.taktyx.model.Message;
 import com.taktyx.model.Service;
+import com.taktyx.model.User;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,8 +17,8 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
-@Table(name = "AssocServicesMessages")
-public class ServiceMessage implements Serializable
+@Table(name = "AssocUsersMessages")
+public class UserMessage implements Serializable
 {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,22 +31,13 @@ public class ServiceMessage implements Serializable
   @Column(name = "date_modified")
   protected Timestamp dateModified;
 
+  @ManyToOne(targetEntity = User.class)
+  @JoinColumn(name = "user_id", referencedColumnName = "id")
+  protected User user;
+
   @ManyToOne(targetEntity = Service.class)
   @JoinColumn(name = "service_id", referencedColumnName = "id")
   protected Service service;
-
-  @Column(name = "has_read", nullable = false)
-  protected boolean read;
-
-  public boolean hasRead()
-  {
-    return read;
-  }
-
-  public void setRead(boolean read)
-  {
-    this.read = read;
-  }
 
   @ManyToOne(targetEntity = Message.class)
   @JoinColumn(name = "message_id", referencedColumnName = "id")
@@ -59,6 +51,16 @@ public class ServiceMessage implements Serializable
   public void setService(Service service)
   {
     this.service = service;
+  }
+
+  public User getUser()
+  {
+    return user;
+  }
+
+  public void setUser(User user)
+  {
+    this.user = user;
   }
 
   public Message getMessage()
