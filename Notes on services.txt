@@ -1,0 +1,9 @@
+- A service should be able to determine whether or not they can recieve messages because some of them might want you to call them or email them.
+
+- A client should also be able to send the same message out to all of the services that popped up in the search results. This is one of the hallmarks of Taktyx.
+
+- Once a client's query is closed, no more services will be able to respond to that client.
+
+- Services do NOT have access to any client contact information at ALL. If the client wants to provide his/her information in a message to services they can if they want to. They can put whatever they want in the message. It's a free country.
+
+
